@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature Converter</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="converter-card">
+    <h1>Temperature Converter</h1>
+    <p class="subtitle">Convert between Celsius, Fahrenheit & Kelvin</p>
+
+    <div class="input-group">
+      <label for="tempInput">Enter Temperature</label>
+      <input type="text" id="tempInput" placeholder="e.g. 25">
+    </div>
+
+    <div class="input-group">
+      <label for="unitSelect">From Unit</label>
+      <select id="unitSelect">
+        <option value="C">Celsius (°C)</option>
+        <option value="F">Fahrenheit (°F)</option>
+        <option value="K">Kelvin (K)</option>
+      </select>
+    </div>
+
+    <button id="convertBtn">Convert</button>
+
+    <p id="errorMsg" class="error"></p>
+
+    <div id="results" class="results hidden">
+      <div class="result-row"><span>Celsius</span><span id="resC">—</span></div>
+      <div class="result-row"><span>Fahrenheit</span><span id="resF">—</span></div>
+      <div class="result-row"><span>Kelvin</span><span id="resK">—</span></div>
+    </div>
+  </div>
+
+<script>
+const tempInput = document.getElementById('tempInput');
+const unitSelect = document.getElementById('unitSelect');
+const convertBtn = document.getElementById('convertBtn');
+const errorMsg = document.getElementById('errorMsg');
+const results = document.getElementById('results');
+const resC = document.getElementById('resC');
+const resF = document.getElementById('resF');
+const resK = document.getElementById('resK');
+
+convertBtn.addEventListener('click', convertTemperature);
+tempInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') convertTemperature();
+});
+
+function convertTemperature() {
+  const rawValue = tempInput.value.trim();
+  errorMsg.textContent = '';
+  results.classList.add('hidden');
+
+  // Validation: reject non-numeric input
+  if (rawValue === '' || isNaN(rawValue)) {
+    errorMsg.textContent = 'Please enter a valid number.';
+    return;
+  }
+
+  const value = parseFloat(rawValue);
+  const unit = unitSelect.value;
+
+  // Convert input to Celsius first
+  let celsius;
+  if (unit === 'C') celsius = value;
+  if (unit === 'F') celsius = (value - 32) * 5 / 9;
+  if (unit === 'K') celsius = value - 273.15;
+
+  // Edge case: absolute zero violation
+  if (celsius < -273.15) {
+    errorMsg.textContent = 'That temperature is below absolute zero (−273.15°C) — not physically possible.';
+    return;
+  }
+
+  const fahrenheit = (celsius * 9 / 5) + 32;
+  const kelvin = celsius + 273.15;
+
+  resC.textContent = celsius.toFixed(2) + ' °C';
+  resF.textContent = fahrenheit.toFixed(2) + ' °F';
+  resK.textContent = kelvin.toFixed(2) + ' K';
+
+  results.classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
