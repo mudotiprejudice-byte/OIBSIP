@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prejudice Mudoti — Software Developer Portfolio</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo">The dev Queen</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact" class="nav-cta">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero / Profile Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="avatar">P</div>
+      <h1>Hi, I'm Prejudice Mudoti</h1>
+      <p class="role">Software Developer</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="about-content">
+      <h2>About Me</h2>
+      <p>I'm a software developer and computer science student building real-world applications while sharpening my fundamentals in operating systems, networking, and distributed computing. I currently develop as part of the Women Techsters Bootcamp, working on AI-powered tools that solve practical problems.</p>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="skills">
+    <h2>Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-card">HTML5</div>
+      <div class="skill-card">CSS3</div>
+      <div class="skill-card">JavaScript</div>
+      <div class="skill-card">Node.js / Express</div>
+      <div class="skill-card">MongoDB</div>
+      <div class="skill-card">Git & GitHub</div>
+      <div class="skill-card">Figma</div>
+      <div class="skill-card">REST APIs</div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="projects">
+    <h2>Projects</h2>
+    <div class="project-grid">
+      <div class="project-card">
+        <h3>MedBridge AI</h3>
+        <p>An AI-powered blood donor matching mobile web app, built as a capstone for the Women Techsters Bootcamp. Uses AI for donor matching and demand prediction, with a Node/Express + MongoDB Atlas backend.</p>
+        <a href="https://github.com/meem08/medbridge" class="project-link">View on GitHub →</a>
+      </div>
+      <div class="project-card">
+        <h3>Brew & Co. Landing Page</h3>
+        <p>A fully responsive static landing page built with HTML5 and CSS3, featuring a hero section, feature cards, testimonials, and mobile-first layout using Flexbox and Grid.</p>
+        <a href="https://github.com/mudotiprejudice-byte/brew-co-landing-page" class="project-link">View on GitHub →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <h2>Get In Touch</h2>
+    <p>Prejudice Mudoti</p>
+    <p>mudotiprejudice@gmail.com</p>
+    <div class="contact-icons">
+      <a href="https://www.linkedin.com/in/prejudice-mudoti-582132386?utm_source=share_via&utm_content=profile&utm_medium=member_ios">LinkedIn</a>
+      <a href="https://github.com/mudotiprejudice-byte">GitHub</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 Prejudice Mudoti. All rights reserved.</p>
+  </footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
