@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do App</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app">
+    <h1>To-Do List</h1>
+    <p class="subtitle">Stay on top of your tasks</p>
+
+    <form id="taskForm" class="task-form">
+      <input type="text" id="taskInput" placeholder="Add a new task..." autocomplete="off">
+      <button type="submit">Add</button>
+    </form>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="active">Active</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+    </div>
+
+    <ul id="taskList" class="task-list"></ul>
+
+    <div class="footer-bar">
+      <span id="taskCount">0 tasks left</span>
+      <button id="clearCompleted">Clear completed</button>
+    </div>
+  </div>
+
+<script>
+const taskForm = document.getElementById('taskForm');
+const taskInput = document.getElementById('taskInput');
+const taskList = document.getElementById('taskList');
+const taskCount = document.getElementById('taskCount');
+const clearCompletedBtn = document.getElementById('clearCompleted');
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+let tasks = JSON.parse(localStorage.getItem('todo-tasks')) || [];
+let currentFilter = 'all';
+
+function saveTasks() {
+  localStorage.setItem('todo-tasks', JSON.stringify(tasks));
+}
+
+function render() {
+  taskList.innerHTML = '';
+
+  const filtered = tasks.filter(t => {
+    if (currentFilter === 'active') return !t.completed;
+    if (currentFilter === 'completed') return t.completed;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    taskList.innerHTML = '<li class="empty">No tasks here yet.</li>';
+  }
+
+  filtered.forEach(task => {
+    const li = document.createElement('li');
+    li.className = 'task-item' + (task.completed ? ' completed' : '');
+    li.dataset.id = task.id;
+
+    li.innerHTML = `
+      <input type="checkbox" class="check" ${task.completed ? 'checked' : ''}>
+      <span class="task-text" contenteditable="false">${escapeHtml(task.text)}</span>
+      <div class="task-actions">
+        <button class="edit-btn" title="Edit">✎</button>
+        <button class="delete-btn" title="Delete">✕</button>
+      </div>
+    `;
+    taskList.appendChild(li);
+  });
+
+  const remaining = tasks.filter(t => !t.completed).length;
+  taskCount.textContent = `${remaining} task${remaining !== 1 ? 's' : ''} left`;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+taskForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const text = taskInput.value.trim();
+  if (!text) return;
+  tasks.push({ id: Date.now(), text, completed: false });
+  taskInput.value = '';
+  saveTasks();
+  render();
+});
+
+taskList.addEventListener('click', (e) => {
+  const li = e.target.closest('.task-item');
+  if (!li) return;
+  const id = Number(li.dataset.id);
+  const task = tasks.find(t => t.id === id);
+
+  if (e.target.classList.contains('check')) {
+    task.completed = e.target.checked;
+    saveTasks();
+    render();
+  }
+
+  if (e.target.classList.contains('delete-btn')) {
+    tasks = tasks.filter(t => t.id !== id);
+    saveTasks();
+    render();
+  }
+
+  if (e.target.classList.contains('edit-btn')) {
+    const span = li.querySelector('.task-text');
+    const isEditing = span.contentEditable === 'true';
+
+    if (!isEditing) {
+      span.contentEditable = 'true';
+      span.focus();
+      placeCaretAtEnd(span);
+      e.target.textContent = '✔';
+    } else {
+      task.text = span.textContent.trim() || task.text;
+      span.contentEditable = 'false';
+      saveTasks();
+      render();
+    }
+  }
+});
+
+function placeCaretAtEnd(el) {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+clearCompletedBtn.addEventListener('click', () => {
+  tasks = tasks.filter(t => !t.completed);
+  saveTasks();
+  render();
+});
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+render();
+</script>
+
+</body>
+</html>
