@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="calculator">
+    <div class="display">
+      <div id="expression" class="expression"></div>
+      <div id="current" class="current">0</div>
+    </div>
+    <div class="buttons">
+      <button class="btn function" data-action="clear">C</button>
+      <button class="btn function" data-action="backspace">⌫</button>
+      <button class="btn function" data-action="percent">%</button>
+      <button class="btn operator" data-op="/">÷</button>
+
+      <button class="btn" data-num="7">7</button>
+      <button class="btn" data-num="8">8</button>
+      <button class="btn" data-num="9">9</button>
+      <button class="btn operator" data-op="*">×</button>
+
+      <button class="btn" data-num="4">4</button>
+      <button class="btn" data-num="5">5</button>
+      <button class="btn" data-num="6">6</button>
+      <button class="btn operator" data-op="-">−</button>
+
+      <button class="btn" data-num="1">1</button>
+      <button class="btn" data-num="2">2</button>
+      <button class="btn" data-num="3">3</button>
+      <button class="btn operator" data-op="+">+</button>
+
+      <button class="btn zero" data-num="0">0</button>
+      <button class="btn" data-num=".">.</button>
+      <button class="btn equals" data-action="equals">=</button>
+    </div>
+  </div>
+
+<script>
+const expressionEl = document.getElementById('expression');
+const currentEl = document.getElementById('current');
+
+let current = '0';
+let previous = '';
+let operator = null;
+let resultShown = false;
+
+function updateDisplay() {
+  currentEl.textContent = current;
+  expressionEl.textContent = previous + (operator ? ' ' + operator : '');
+}
+
+function inputNumber(num) {
+  if (resultShown) {
+    current = num === '.' ? '0.' : num;
+    resultShown = false;
+    return;
+  }
+  if (num === '.' && current.includes('.')) return;
+  current = current === '0' && num !== '.' ? num : current + num;
+}
+
+function chooseOperator(op) {
+  if (operator && previous !== '') {
+    calculate();
+  }
+  operator = op;
+  previous = current;
+  current = '0';
+  resultShown = false;
+}
+
+function calculate() {
+  const prev = parseFloat(previous);
+  const curr = parseFloat(current);
+  if (isNaN(prev) || isNaN(curr)) return;
+
+  let result;
+  switch (operator) {
+    case '+': result = prev + curr; break;
+    case '-': result = prev - curr; break;
+    case '*': result = prev * curr; break;
+    case '/':
+      if (curr === 0) {
+        current = 'Error';
+        previous = '';
+        operator = null;
+        updateDisplay();
+        resultShown = true;
+        return;
+      }
+      result = prev / curr;
+      break;
+    default: return;
+  }
+
+  current = parseFloat(result.toFixed(8)).toString();
+  operator = null;
+  previous = '';
+  resultShown = true;
+}
+
+document.querySelectorAll('[data-num]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    inputNumber(btn.dataset.num);
+    updateDisplay();
+  });
+});
+
+document.querySelectorAll('[data-op]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    chooseOperator(btn.dataset.op);
+    updateDisplay();
+  });
+});
+
+document.querySelector('[data-action="equals"]').addEventListener('click', () => {
+  calculate();
+  updateDisplay();
+});
+
+document.querySelector('[data-action="clear"]').addEventListener('click', () => {
+  current = '0';
+  previous = '';
+  operator = null;
+  resultShown = false;
+  updateDisplay();
+});
+
+document.querySelector('[data-action="backspace"]').addEventListener('click', () => {
+  current = current.length > 1 ? current.slice(0, -1) : '0';
+  updateDisplay();
+});
+
+document.querySelector('[data-action="percent"]').addEventListener('click', () => {
+  current = (parseFloat(current) / 100).toString();
+  updateDisplay();
+});
+
+updateDisplay();
+</script>
+
+</body>
+</html>
