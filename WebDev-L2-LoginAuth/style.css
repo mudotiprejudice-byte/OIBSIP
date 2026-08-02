@@ -1,0 +1,104 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0B0F14;
+  --surface: #131A22;
+  --border: #202932;
+  --text: #E6EDF3;
+  --muted: #8B98A5;
+  --cyan: #5EEAD4;
+  --violet: #A78BFA;
+  --error: #F87171;
+  --success: #6EE7A8;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 36px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.auth-card.hidden, #signupView.hidden, #loginView.hidden { display: none; }
+
+h1 { font-family: 'Poppins', sans-serif; font-size: 1.5rem; margin-bottom: 6px; }
+.subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 26px; }
+
+.input-group { margin-bottom: 16px; text-align: left; }
+
+.input-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.input-group input:focus { outline: none; border-color: var(--cyan); }
+
+.error {
+  display: block;
+  color: var(--error);
+  font-size: 0.78rem;
+  margin-top: 4px;
+  min-height: 14px;
+}
+
+.success {
+  color: var(--success);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  text-align: center;
+}
+
+button[type="submit"], #logoutBtn {
+  width: 100%;
+  padding: 13px;
+  background: var(--cyan);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s ease;
+}
+
+button[type="submit"]:hover, #logoutBtn:hover { background: #4DD8C4; }
+
+.switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.switch a { color: var(--cyan); font-weight: 600; }
+
+@media (max-width: 480px) {
+  .auth-card { padding: 28px 24px; }
+}

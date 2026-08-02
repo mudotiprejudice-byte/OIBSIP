@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Signup</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="auth-card" id="authCard">
+
+    <!-- Login Form -->
+    <div id="loginView">
+      <h1>WELCOME</h1>
+      <p class="subtitle">Log in to your account</p>
+
+      <form id="loginForm" novalidate>
+        <div class="input-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com">
+          <span class="error" id="loginEmailError"></span>
+        </div>
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+          <span class="error" id="loginPasswordError"></span>
+        </div>
+        <button type="submit">Log In</button>
+        <p class="success" id="loginSuccess"></p>
+      </form>
+
+      <p class="switch">Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupView" class="hidden">
+      <h1>Create account</h1>
+      <p class="subtitle">Sign up to get started</p>
+
+      <form id="signupForm" novalidate>
+        <div class="input-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Your name">
+          <span class="error" id="signupNameError"></span>
+        </div>
+        <div class="input-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com">
+          <span class="error" id="signupEmailError"></span>
+        </div>
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="At least 6 characters">
+          <span class="error" id="signupPasswordError"></span>
+        </div>
+        <div class="input-group">
+          <label for="signupConfirm">Confirm Password</label>
+          <input type="password" id="signupConfirm" placeholder="Re-enter password">
+          <span class="error" id="signupConfirmError"></span>
+        </div>
+        <button type="submit">Sign Up</button>
+        <p class="success" id="signupSuccess"></p>
+      </form>
+
+      <p class="switch">Already have an account? <a href="#" id="showLogin">Log in</a></p>
+    </div>
+
+  </div>
+
+  <!-- Logged-in state -->
+  <div class="auth-card hidden" id="dashboardView">
+    <h1>You're logged in </h1>
+    <p class="subtitle" id="welcomeMsg"></p>
+    <button id="logoutBtn">Log Out</button>
+  </div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const loginView = $('loginView');
+const signupView = $('signupView');
+const dashboardView = $('dashboardView');
+
+$('showSignup').addEventListener('click', (e) => {
+  e.preventDefault();
+  loginView.classList.add('hidden');
+  signupView.classList.remove('hidden');
+});
+
+$('showLogin').addEventListener('click', (e) => {
+  e.preventDefault();
+  signupView.classList.add('hidden');
+  loginView.classList.remove('hidden');
+});
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem('demo-users')) || [];
+}
+
+function saveUsers(users) {
+  localStorage.setItem('demo-users', JSON.stringify(users));
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function clearErrors(form) {
+  form.querySelectorAll('.error').forEach(el => el.textContent = '');
+}
+
+// Signup
+$('signupForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearErrors(e.target);
+  $('signupSuccess').textContent = '';
+
+  const name = $('signupName').value.trim();
+  const email = $('signupEmail').value.trim();
+  const password = $('signupPassword').value;
+  const confirm = $('signupConfirm').value;
+  let valid = true;
+
+  if (!name) { $('signupNameError').textContent = 'Name is required.'; valid = false; }
+  if (!isValidEmail(email)) { $('signupEmailError').textContent = 'Enter a valid email.'; valid = false; }
+  if (password.length < 6) { $('signupPasswordError').textContent = 'Password must be at least 6 characters.'; valid = false; }
+  if (confirm !== password) { $('signupConfirmError').textContent = 'Passwords do not match.'; valid = false; }
+
+  const users = getUsers();
+  if (valid && users.some(u => u.email === email)) {
+    $('signupEmailError').textContent = 'An account with this email already exists.';
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  users.push({ name, email, password });
+  saveUsers(users);
+  $('signupSuccess').textContent = 'Account created! You can now log in.';
+  e.target.reset();
+  setTimeout(() => {
+    signupView.classList.add('hidden');
+    loginView.classList.remove('hidden');
+  }, 1200);
+});
+
+// Login
+$('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearErrors(e.target);
+  $('loginSuccess').textContent = '';
+
+  const email = $('loginEmail').value.trim();
+  const password = $('loginPassword').value;
+  let valid = true;
+
+  if (!isValidEmail(email)) { $('loginEmailError').textContent = 'Enter a valid email.'; valid = false; }
+  if (!password) { $('loginPasswordError').textContent = 'Password is required.'; valid = false; }
+  if (!valid) return;
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if (!user) {
+    $('loginPasswordError').textContent = 'Incorrect email or password.';
+    return;
+  }
+
+  loginView.classList.add('hidden');
+  dashboardView.classList.remove('hidden');
+  $('welcomeMsg').textContent = `Logged in as ${user.name} (${user.email})`;
+  e.target.reset();
+});
+
+$('logoutBtn').addEventListener('click', () => {
+  dashboardView.classList.add('hidden');
+  loginView.classList.remove('hidden');
+});
+</script>
+
+</body>
+</html>
